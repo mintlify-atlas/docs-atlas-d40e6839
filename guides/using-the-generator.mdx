@@ -1,0 +1,164 @@
+---
+title: "Using the generator"
+description: "A complete walkthrough of every feature and UI control in the String Art Generator."
+---
+
+This page walks through the full generator interface from loading to output.
+
+---
+
+## Loading the generator
+
+When you open the generator, the status line reads:
+
+```
+Please wait: loading...
+```
+
+The generator loads OpenCV compiled to WebAssembly. Once ready, the status updates to:
+
+```
+Generator is ready.
+```
+
+<Info>
+  If the status stays on "loading..." for more than 30 seconds, refresh the page. The WebAssembly module sometimes needs a clean load.
+</Info>
+
+Do not upload an image until the status shows "Generator is ready." The input fields for **Number of Pins**, **Number of Lines**, and **Line Weight** also become active at this point.
+
+---
+
+## Configurable parameters
+
+Three parameters control the output. They must be set before uploading an image — changing them after upload has no effect on the current run.
+
+<CardGroup cols={3}>
+  <Card title="Number of Pins" icon="circle-nodes">
+    How many pins are placed around the circle. Default: **288**. More pins give finer detail but slow down generation.
+  </Card>
+  <Card title="Number of Lines" icon="lines-leaning">
+    How many lines the algorithm draws. Default: **4000**. More lines produce a denser, darker result.
+  </Card>
+  <Card title="Line Weight" icon="weight-hanging">
+    How much each drawn line reduces the error at its pixels. Default: **20**. Lower values create a lighter, more delicate result.
+  </Card>
+</CardGroup>
+
+---
+
+## Uploading an image
+
+Click **Click Here and select an Image to Start** to open the file picker. Select any image file from your device.
+
+Once selected, the image is immediately loaded into the browser and processing begins automatically. You do not need to click another button.
+
+<Tip>
+  For best results, use a high-contrast close-up photo — a portrait, a bold logo, or a simple graphic. See [Tips and tricks](/guides/tips-and-tricks) for more guidance on image selection.
+</Tip>
+
+---
+
+## Processing stages
+
+After upload, three stages run in sequence. The status line updates at each stage.
+
+<Steps>
+  <Step title="Calculating pins...">
+    The generator places all pins around the circle and stores their coordinates. This is fast — typically less than a second.
+
+    **Display**: The original uploaded image appears.
+  </Step>
+  <Step title="Precalculating all lines...">
+    All valid pin-pair combinations are computed and cached. For 288 pins this is roughly 40,000 line segments.
+
+    **Display**: The cropped, grayscaled, circle-cropped image appears.
+  </Step>
+  <Step title="Drawing Lines...">
+    The main greedy algorithm runs. Lines are drawn one at a time, and the preview updates every 10 lines.
+
+    **Progress indicator**: A counter appears below the preview:
+
+    ```
+    X Lines drawn | Y% complete
+    ```
+
+    **Display**: The string art output builds up in real time on the preview canvas.
+  </Step>
+</Steps>
+
+When all lines are drawn, the status updates to **Complete** and the page scrolls to the output section.
+
+---
+
+## The pin sequence output
+
+After generation completes, a large text area appears containing the pin sequence — a comma-separated list of integers:
+
+```
+0,127,22,147,276,144,21,126,...
+```
+
+This sequence is the full instruction set for building the physical piece. Each number is a pin to visit in order, starting at pin 0.
+
+<Warning>
+  Copy the sequence and save it before leaving the page. If you refresh or close the tab, the sequence is lost and you would need to regenerate.
+</Warning>
+
+---
+
+## Restoring a saved sequence
+
+If you already have a pin sequence from a previous run, click **Already have steps?** (top right of the page) to skip generation entirely. This hides the image processing steps and shows the output panel directly. Paste your saved sequence into the text area and proceed to **Start Creating** or **Just Draw**.
+
+---
+
+## Example sequences
+
+Three built-in examples are available below the output text area:
+
+- **Example 1** — a portrait
+- **Example 2** — another pattern
+- **Example 3** — a third pattern
+
+<Warning>
+  Clicking an example button **overwrites** whatever is currently in the output text area. Copy your generated sequence first if you want to keep it.
+</Warning>
+
+---
+
+## Start Creating vs Just Draw
+
+Once you have a pin sequence in the text area, two buttons are available:
+
+<CardGroup cols={2}>
+  <Card title="Start Creating" icon="shoe-prints">
+    Launches the step-by-step creation assistant. Designed for physically building the piece. Shows one line at a time with the current thread highlighted in red. Supports keyboard navigation.
+  </Card>
+  <Card title="Just Draw" icon="play">
+    Replays the entire sequence automatically at full speed, drawing all lines in black without pausing. Useful for a quick preview of the full result.
+  </Card>
+</CardGroup>
+
+---
+
+## Creation assistant controls
+
+When **Start Creating** is active, the display shows:
+
+```
+Current Line: X | Pin A to B
+```
+
+The current line is drawn in **red**. All previous lines are drawn in black.
+
+You can advance or go back using:
+
+| Action | Keyboard | Button |
+|---|---|---|
+| Next line | Space or Right arrow | **Next Step** |
+| Previous line | Left arrow | **Last Step** |
+
+<Note>
+  "Last Step" redraws all previous lines from scratch — it does not use an undo buffer. Going back many steps on a long sequence may take a moment.
+</Note>

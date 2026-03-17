@@ -1,97 +1,64 @@
 ---
-title: "Introduction"
-description: "Welcome to the new home for your documentation"
+title: "String Art Generator"
+description: "Convert any photo into a beautiful string art pattern with step-by-step instructions for physical creation."
 ---
 
-## Setting up
-
-Get your documentation site up and running in minutes.
-
-<Card
-  title="Start here"
-  icon="rocket"
-  href="/quickstart"
-  horizontal
->
-  Follow our three step quickstart guide.
-</Card>
-
-## Make it yours
-
-Design a docs site that looks great and empowers your users.
-
-<Columns cols={2}>
-  <Card
-    title="Edit locally"
-    icon="pen-to-square"
-    href="/development"
-  >
-    Edit your docs locally and preview them in real time.
+<CardGroup cols={2}>
+  <Card title="Quick Start" icon="rocket" href="/quickstart">
+    Upload a photo and generate your first string art pattern in minutes.
   </Card>
-  <Card
-    title="Customize your site"
-    icon="palette"
-    href="/essentials/settings"
-  >
-    Customize the design and colors of your site to match your brand.
+  <Card title="How It Works" icon="circle-nodes" href="/guides/how-it-works">
+    Learn the algorithm behind the string art generation process.
   </Card>
-    <Card
-    title="Set up navigation"
-    icon="map"
-    href="/essentials/navigation"
-  >
-    Organize your docs to help users find what they need and succeed with your product.
+  <Card title="Configuration" icon="sliders" href="/reference/configuration">
+    Fine-tune pins, lines, and line weight for the best results.
   </Card>
-  <Card
-    title="API documentation"
-    icon="terminal"
-    href="/api-reference/introduction"
-  >
-    Auto-generate API documentation from OpenAPI specifications.
+  <Card title="Physical Creation Guide" icon="hand-sparkles" href="/guides/physical-creation">
+    Use the step-by-step assistant to build your string art physically.
   </Card>
-</Columns>
+</CardGroup>
 
-## Create beautiful pages
+## What is String Art Generator?
 
-Everything you need to create world-class documentation.
+String Art Generator is a free, browser-based tool that transforms any photograph into a string art pattern. It uses a greedy algorithm — powered by OpenCV — to determine the most efficient sequence of thread paths between pins arranged in a circle, recreating your image using only straight lines of thread.
 
-<Columns cols={2}>
-  <Card
-    title="Write with MDX"
-    icon="pen-fancy"
-    href="/essentials/markdown"
-  >
-    Use MDX to style your docs pages.
-  </Card>
-  <Card
-    title="Code samples"
-    icon="code"
-    href="/essentials/code"
-  >
-    Add sample code to demonstrate how to use your product.
-  </Card>
-  <Card
-    title="Images"
-    icon="image"
-    href="/essentials/images"
-  >
-    Display images and other media.
-  </Card>
-  <Card
-    title="Reusable snippets"
-    icon="recycle"
-    href="/essentials/reusable-snippets"
-  >
-    Write once and reuse across your docs.
-  </Card>
-</Columns>
+The result is both a digital preview and a numbered pin sequence you can use to actually build the piece on a wooden hoop or canvas.
 
-## Need inspiration?
+## Key features
 
-<Card
-  title="See complete examples"
-  icon="stars"
-  href="https://mintlify.com/customers"
->
-  Browse our showcase of exceptional documentation sites.
+<CardGroup cols={2}>
+  <Card title="Photo to pattern" icon="image">
+    Upload any photo and the generator automatically crops, grayscales, and processes it into a string art sequence.
+  </Card>
+  <Card title="Real-time preview" icon="eye">
+    Watch the string art build up line by line as the algorithm runs in your browser.
+  </Card>
+  <Card title="Configurable parameters" icon="gear">
+    Control the number of pins (default 288), number of lines (default 4000), and line weight to dial in the result.
+  </Card>
+  <Card title="Save and restore" icon="floppy-disk">
+    Copy the generated pin sequence to save your work — paste it back later without re-running the generator.
+  </Card>
+  <Card title="Creation assistant" icon="list-check">
+    A step-by-step mode highlights the current thread path and uses keyboard navigation so you can build the piece hands-free.
+  </Card>
+  <Card title="Built-in examples" icon="shapes">
+    Three built-in example sequences let you explore the tool before uploading your own photo.
+  </Card>
+</CardGroup>
+
+## How the algorithm works
+
+The generator uses a greedy line-selection algorithm that iterates up to 4,000 times. At each step it evaluates every possible line from the current pin to another pin (skipping pins that are too close or were used recently) and selects the line that best reduces the current error between the target image and the string art rendered so far.
+
+<Note>
+  For best results, use a high-contrast, close-up portrait or graphic. Busy backgrounds or low-contrast images produce less defined results.
+</Note>
+
+## Try it now
+
+The generator runs entirely in your browser — no installation required.
+
+<Card title="Open String Art Generator" icon="arrow-up-right-from-square" href="https://halfmonty.github.io/StringArtGenerator/">
+  Launch the live web app
 </Card>

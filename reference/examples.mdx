@@ -1,0 +1,71 @@
+---
+title: "Built-in Examples"
+description: "Reference for the three pre-generated pin sequences bundled with the String Art Generator."
+---
+
+The String Art Generator ships with three built-in pin sequences that you can load instantly — no image upload or generation step required. They are useful for understanding the output format, testing the creation assistant, and exploring what the finished art looks like before committing to a physical build.
+
+## What are the built-in examples?
+
+Each example is a long, pre-computed list of pin indices stored directly in the source code. They represent real generation runs against actual photos and produce recognisable string art patterns when drawn. Loading an example is identical to having generated a sequence yourself — you can feed it straight into the creation assistant or draw it immediately.
+
+## Accessing the examples
+
+The example buttons only appear **after** a pin sequence is available in the output area. There are two ways to reach that area:
+
+1. **After generation** — complete a full generation run by uploading an image. The sequence output section appears automatically when generation finishes.
+2. **Via "Already have steps?"** — click the button in the top-right of the page header to reveal the output section directly, without running the generator.
+
+Once the output area is visible, three buttons are shown below the textarea:
+
+- **Example 1**
+- **Example 2**
+- **Example 3**
+
+Clicking any of them immediately writes that sequence into the textarea.
+
+<Warning>
+  Clicking an example button **overwrites** whatever is currently in the pin sequence textarea. If you have already generated or pasted your own sequence, copy it somewhere safe before clicking an example.
+</Warning>
+
+## Using a loaded example
+
+After loading an example sequence, the same two action buttons are available as after any generation:
+
+| Button | What it does |
+|--------|--------------|
+| **Start Creating** | Opens the step-by-step creation assistant. Highlights one thread at a time and lets you advance with the keyboard or on-screen buttons. |
+| **Just Draw** | Renders the entire sequence as a complete image in one pass, with no step-by-step guidance. |
+
+See the [Physical Creation Guide](/guides/physical-creation) for a walkthrough of the building process.
+
+## Pin sequence format
+
+All sequences — whether built-in or generated from your own image — use the same format: a **comma-separated list of 0-based integer pin indices**. The first value is always `0` (the starting pin). Each subsequent value is the pin the thread travels to next.
+
+The sequence length is `MAX_LINES + 1` values (one extra for the starting pin).
+
+**Example fragment from Example 1:**
+
+```
+0,127,22,147,276,144,21,126,20,142,9,139,270,140,271,141,...
+```
+
+This means: start at pin `0`, go to pin `127`, then pin `22`, then `147`, and so on.
+
+## The "Already have steps?" flow
+
+If you have a previously saved pin sequence you want to reuse without regenerating, use this flow:
+
+1. Click **"Already have steps?"** in the top-right corner of the page header.
+2. The pin sequence input area slides into view without requiring an image upload or generation run.
+3. Paste your comma-separated sequence into the textarea.
+4. Click **Start Creating** or **Just Draw**.
+
+<Tip>
+  After every generation run, copy the entire contents of the textarea and save it to a text file or notes app. This lets you reload the sequence any time without re-running the (potentially slow) generator.
+</Tip>
+
+## About the example sequences
+
+The three examples are demo sequences bundled for convenience. They are not generated from any specific named photo and are intended purely to illustrate what the output looks like. You can generate your own sequences from any photo — see the [Quickstart](/quickstart) for instructions.

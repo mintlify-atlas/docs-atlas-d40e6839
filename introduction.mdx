@@ -1,0 +1,40 @@
+---
+title: Introduction
+description: Learn what the String Art Generator does and how it fits into the physical craft of string art.
+---
+
+String art is a craft technique where colored thread or string is wound between pins arranged on a board, creating geometric patterns and photorealistic images through the overlapping of many individual lines. The appeal is in its precision — images built entirely from straight lines, yet capable of producing smooth curves and tonal gradations.
+
+The String Art Generator is a browser-based tool that automates the hardest part of the craft: figuring out which pins to connect and in what order. You upload a photo, the tool analyzes it, and outputs a numbered pin sequence. You then use that sequence to guide your physical build — wrapping string from pin to pin in order.
+
+## How it works
+
+The generator processes your image through four stages:
+
+1. **Image preparation** — Your photo is cropped to a square, converted to grayscale, and circle-masked to match the round hoop.
+2. **Pin layout** — Pin coordinates are calculated around the circumference of the circle (288 pins by default).
+3. **Line precalculation** — All valid lines between pin pairs are computed and ranked by how much darkness they would add to the image.
+4. **Greedy line selection** — The algorithm iteratively picks the line that best matches the remaining darkness in the image, up to the configured maximum (4000 lines by default).
+
+The result is a comma-separated sequence of pin numbers. You copy that sequence and use it as a step-by-step guide to build the physical piece.
+
+## Why use this tool
+
+Calculating an optimal pin sequence by hand for hundreds of lines is not feasible. This tool does that computation in your browser — no installation, no account, no server-side processing. The entire algorithm runs locally using OpenCV (loaded from CDN) and standard browser APIs.
+
+## Prerequisites
+
+You need only a modern desktop browser with WebAssembly support. All major browsers released after 2017 qualify. No plugins, extensions, or local software are required.
+
+OpenCV is loaded asynchronously from a CDN when the page opens. The status bar displays **"Generator is ready."** once loading is complete. Do not upload an image until you see that message.
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="rocket" href="/quickstart">
+    Go from zero to a generated pin sequence in minutes.
+  </Card>
+  <Card title="Configuration reference" icon="sliders" href="/reference/configuration">
+    Understand how pins, lines, and line weight affect your output.
+  </Card>
+</CardGroup>

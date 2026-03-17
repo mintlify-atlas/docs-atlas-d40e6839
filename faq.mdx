@@ -1,0 +1,106 @@
+---
+title: "FAQ"
+description: "Answers to common questions about the String Art Generator."
+---
+
+<AccordionGroup>
+
+  <Accordion title="The page says 'Please wait: loading...' for a long time — is something wrong?">
+    The generator relies on **OpenCV.js**, a WebAssembly build of the OpenCV computer vision library. The file is large and loaded from a CDN, so it can take anywhere from 10 to 30 seconds on a slow connection.
+
+    Wait until the status message changes to **"Generator is ready."** before uploading an image. If it never changes, try a hard refresh (`Ctrl+Shift+R` / `Cmd+Shift+R`) or check your network connection.
+  </Accordion>
+
+  <Accordion title="The page crashed or became unresponsive — what do I do?">
+    The entire algorithm runs inside your browser tab and can consume significant memory — especially with a high pin count or scale factor. If the tab freezes or crashes, simply **refresh the page**.
+
+    <Tip>
+      If you had already generated a pin sequence before the crash, you can paste it back using the **"Already have steps?"** button in the page header. You will not need to re-run the generator.
+    </Tip>
+  </Accordion>
+
+  <Accordion title="My generated image looks blurry or unrecognisable — what can I do?">
+    Image quality depends heavily on the source photo. A few things to try:
+
+    - Use a **close-up, high-contrast photo** with a plain or simple background. Busy backgrounds reduce the algorithm's ability to find meaningful lines.
+    - **Increase the number of lines** (`MAX_LINES`) to add more detail and darkness.
+    - **Reduce line weight** (`LINE_WEIGHT`) for a more subtle per-line contribution, which can prevent the algorithm from overshooting in bright areas.
+    - Ensure your subject fills as much of the frame as possible — the image is cropped to a square from the centre, so important detail near the edges may be lost.
+  </Accordion>
+
+  <Accordion title="How do I save my work?">
+    After generation completes, a textarea appears containing the full comma-separated pin sequence. **Copy the entire contents** and paste it into a text file, notes app, or anywhere you can store plain text.
+
+    To reload it later:
+    1. Open the generator.
+    2. Click **"Already have steps?"** in the top-right of the header.
+    3. Paste the sequence into the textarea.
+    4. Click **Start Creating** or **Just Draw**.
+
+    You will not need to re-upload your image or run the generator again.
+  </Accordion>
+
+  <Accordion title="What image formats are supported?">
+    Any format your browser accepts via a standard `<input type="file">` element — this typically includes **JPEG, PNG, GIF, and WebP**. The generator converts whatever you upload to grayscale internally, so colour images work fine.
+  </Accordion>
+
+  <Accordion title="How long does generation take?">
+    It depends on your device and the settings you use. With the defaults (288 pins, 4000 lines) expect **30 seconds to a few minutes** on modern desktop hardware. Mobile devices and older machines will be slower.
+
+    A few factors that affect speed:
+
+    | Factor | Impact |
+    |--------|--------|
+    | Higher `N_PINS` | Quadratically more lines to precalculate |
+    | Higher `MAX_LINES` | Linearly more iterations |
+    | Slower device / browser | All computation is single-threaded |
+
+    <Note>
+      The algorithm runs entirely in the browser's main thread. Switching to another tab may throttle JavaScript execution and slow generation. Keep the tab in the foreground for best performance.
+    </Note>
+  </Accordion>
+
+  <Accordion title="How do I physically build the string art?">
+    See the [Physical Creation Guide](/guides/physical-creation). In summary, you will need:
+
+    - A circular hoop or board
+    - Evenly spaced nails or pins hammered around the edge (the exact count set by `N_PINS`)
+    - Thin thread or string
+
+    Once your sequence is generated, the **creation assistant** ("Start Creating" button) walks you through each thread step one at a time, highlighting which pin to go to next.
+  </Accordion>
+
+  <Accordion title="What does the thread length estimate mean?">
+    During generation the app tracks the cumulative physical distance of all threads and displays it in the status area. The estimate is calculated using the constant `HOOP_DIAMETER = 0.625` metres (~25 inches) as the assumed size of your physical hoop.
+
+    The formula scales pixel distances from the internal 500 px coordinate space to real-world metres:
+
+    ```js
+    thread_length += HOOP_DIAMETER / length * dist;
+    ```
+
+    Use this estimate to buy enough thread before starting your build.
+  </Accordion>
+
+  <Accordion title="Can I change the hoop size for a more accurate thread estimate?">
+    Not from the UI. You need to edit the `HOOP_DIAMETER` constant at the top of the `<script>` block in `index.html`:
+
+    ```js
+    let HOOP_DIAMETER = 0.625; // metres — change this to match your hoop
+    ```
+
+    The value is in **metres**. For example, a 30 cm (12-inch) hoop would be `0.30`. This constant affects only the thread length display and has no effect on the visual output or pin sequence.
+  </Accordion>
+
+  <Accordion title="The keyboard shortcuts don't work in creation mode.">
+    Keyboard input is only active when the page has focus. Click anywhere on the page first, then use the following keys:
+
+    | Key | Action |
+    |-----|--------|
+    | `Space` or `→` | Next step |
+    | `←` | Previous step |
+
+    If shortcuts still do not respond, make sure you clicked **Start Creating** (not "Just Draw") — keyboard navigation is only enabled in the step-by-step creation assistant, not during the full draw.
+  </Accordion>
+
+</AccordionGroup>

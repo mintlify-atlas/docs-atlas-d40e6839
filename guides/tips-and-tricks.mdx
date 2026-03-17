@@ -1,0 +1,113 @@
+---
+title: "Tips and tricks"
+description: "Best practices for choosing images, tuning parameters, and building better string art."
+---
+
+## Choosing the right image
+
+The algorithm works best when the subject is distinct from the background. High-contrast images with a clear focal point produce the sharpest results.
+
+<CardGroup cols={2}>
+  <Card title="Good image types" icon="check">
+    - Close-up portraits with a plain background
+    - Bold logos or silhouettes
+    - High-contrast black-and-white photography
+    - Simple graphics with strong outlines
+  </Card>
+  <Card title="Images to avoid" icon="x">
+    - Busy or detailed backgrounds
+    - Low-contrast or washed-out photos
+    - Complex scenes with many subjects
+    - Very small text or fine detail
+  </Card>
+</CardGroup>
+
+<Tip>
+  If your subject is dark on a white background, the algorithm will naturally draw thread along the dark areas. If your subject is light on a dark background, consider inverting the image in a photo editor before uploading — this often produces much better contrast in the output.
+</Tip>
+
+---
+
+## Tuning the parameters
+
+### Number of pins
+
+| Setting | Effect |
+|---|---|
+| Higher (300–400) | Finer detail, smoother curves, slower generation |
+| Lower (100–200) | Coarser, more geometric look, faster generation |
+| Default (288) | Good balance for most images on a 25-inch hoop |
+
+<Note>
+  Higher pin counts also require more physical pins on your hoop. Make sure the pin spacing is practical before increasing this value significantly.
+</Note>
+
+### Number of lines
+
+| Setting | Effect |
+|---|---|
+| Higher (5000–8000) | More detail, denser, and darker result |
+| Lower (1000–2000) | Lighter, more minimalist result |
+| Default (4000) | Works well for most portraits and graphics |
+
+More lines does not always mean better — past a certain point the image becomes too dark and the algorithm starts drawing lines that add more noise than detail.
+
+### Line weight
+
+| Setting | Effect |
+|---|---|
+| Higher (30–50) | Bolder lines, faster convergence, fewer overlapping passes |
+| Lower (5–15) | Lighter, more delicate result, more passes over the same area |
+| Default (20) | Balanced for most use cases |
+
+<Tip>
+  Lower line weight combined with more lines can produce very fine, photographic-looking results — but generation will take longer and the physical thread count increases.
+</Tip>
+
+---
+
+## Handling page crashes
+
+The generator runs the algorithm entirely in the browser using WebAssembly. For very high pin counts or line counts, the browser tab may run out of memory or become unresponsive.
+
+<Warning>
+  If the page crashes, refresh the tab. All generated output will be lost unless you copied the pin sequence beforehand.
+</Warning>
+
+Best practices to avoid crashes:
+
+- Copy the pin sequence to a text file as soon as generation completes
+- Use the default settings before experimenting with higher values
+- Close other tabs to free up browser memory
+- If the page crashes consistently, reduce **Number of Lines** or **Number of Pins**
+
+---
+
+## Physical construction tips
+
+### Pin 0 placement
+
+The algorithm places pin 0 at the **3 o'clock position** (rightmost point). For a more natural orientation when displaying the finished piece, install your hoop so the first pin is at 12 o'clock and rotate the pin numbering accordingly — or simply turn the finished hoop 90° counter-clockwise after you are done.
+
+### Thread choice
+
+- **Thin thread (0.1–0.3 mm)** gives sharper, more detailed results because lines can cross without adding much visual bulk.
+- **Thicker thread (0.5 mm+)** creates a bolder, more tactile piece but reduces fine detail.
+- Use a single color for the most faithful reproduction of the grayscale output. Black thread on a white backing gives the highest contrast.
+
+### Consistent tension
+
+Apply the same tension to every thread segment. Inconsistent tension causes some lines to appear heavier than others, which shifts the visual balance of the piece away from the generated preview.
+
+### Working hands-free
+
+Use keyboard navigation (Space or Right arrow to advance) while your hands are on the hoop. Position the screen so it is visible without moving your head significantly. A monitor stand or tablet at eye level works well.
+
+---
+
+## Saving and reusing sequences
+
+- Copy the sequence immediately after generation — before navigating away.
+- Store it as a plain `.txt` file named with the image description and parameters used, for example: `portrait_288pins_4000lines.txt`.
+- To reuse, paste it into the text area after clicking **Already have steps?**.
+- Share the sequence with others — they can load it without needing the original image.

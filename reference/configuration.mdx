@@ -1,0 +1,102 @@
+---
+title: "Configuration Reference"
+description: "Complete reference for all configurable parameters in the String Art Generator."
+---
+
+The String Art Generator exposes three parameters directly in the UI. Additional constants can be changed by editing the source code. This page documents all of them.
+
+## UI Parameters
+
+These parameters are shown in the header and take effect before you upload an image. Each field responds to `keyup` events — changes apply as you type.
+
+<ParamField query="Number of Pins" type="integer" default="288">
+  Controls how many nail/pin positions are arranged evenly around the circular hoop.
+
+  **Internal variable:** `N_PINS`
+
+  **Practical range:** 50–500
+
+  The value must be greater than `2 × MIN_DISTANCE` (40) for any valid lines to exist. Increasing the pin count gives finer angular resolution and allows the algorithm to draw more precise curves, but it also increases the time spent precalculating all possible lines — the precalculation step scales as O(N_PINS²).
+
+  <Tip>
+    288 (36 × 8) is a good default because it divides evenly by many common numbers, making physical nail placement straightforward.
+  </Tip>
+
+  **Physical implication:** This is the exact number of nails or pins you will need to place on your hoop when building the physical piece.
+</ParamField>
+
+<ParamField query="Number of Lines" type="integer" default="4000">
+  Maximum number of thread passes the algorithm will draw before stopping.
+
+  **Internal variable:** `MAX_LINES`
+
+  **Practical range:** 1000–6000
+
+  More lines produce a darker, more detailed result; fewer lines produce a lighter, more minimal one. The algorithm stops early when it has reached this limit, not when the image is "complete" in any other sense. Each additional line adds to generation time approximately linearly.
+
+  <Note>
+    The output pin sequence will contain exactly `MAX_LINES + 1` values (the extra value is the starting pin, always `0`).
+  </Note>
+</ParamField>
+
+<ParamField query="Line Weight" type="integer" default="20">
+  How much each drawn line darkens the internal error image during generation.
+
+  **Internal variable:** `LINE_WEIGHT`
+
+  **Practical range:** 1–100
+
+  At each step the algorithm subtracts `LINE_WEIGHT` from every pixel covered by the chosen line. A higher value means each thread pass has a stronger impact: the algorithm converges faster but may overshoot and create artifacts. A lower value gives each thread a more subtle contribution, requiring more lines to achieve a similar level of darkness.
+
+  | Value | Effect |
+  |-------|--------|
+  | < 10  | Very subtle per-line contribution; needs many lines for a dark result |
+  | 20    | Default; balanced convergence |
+  | > 40  | Aggressive darkening; risk of overshoot / blocky artifacts |
+</ParamField>
+
+---
+
+## Source-Only Constants
+
+The following constants are defined at the top of the JavaScript in `index.html`. They are not exposed in the UI and require editing the source code directly.
+
+<Warning>
+  Modifying these values requires editing `index.html`. Make a backup before changing anything.
+</Warning>
+
+<ParamField path="MIN_DISTANCE" type="integer" default="20">
+  Minimum number of pins that must separate any two connected pins.
+
+  Prevents the algorithm from drawing very short, near-stationary lines between adjacent pins. Raising this value forces every thread to span a larger arc, which can improve clarity but reduces the total set of valid line pairs.
+</ParamField>
+
+<ParamField path="MIN_LOOP" type="integer" default="20">
+  Size of the recent-pin history buffer used to avoid immediately reusing the same pins.
+
+  The last `MIN_LOOP` visited pins are tracked in `last_pins`. A candidate pin is skipped if it already appears in this list, preventing the thread from looping back and forth between the same small group of pins repeatedly.
+</ParamField>
+
+<ParamField path="IMG_SIZE" type="integer" default="500">
+  Internal processing resolution in pixels.
+
+  The uploaded image is cropped to a square, converted to grayscale, and scaled to `IMG_SIZE × IMG_SIZE` before any line calculations begin. This value also determines the coordinate space of `pin_coords`. Increasing it improves accuracy but raises memory usage significantly.
+</ParamField>
+
+<ParamField path="SCALE" type="integer" default="20">
+  Output canvas resolution multiplier.
+
+  The final result canvas is rendered at `IMG_SIZE × SCALE` pixels on each side (default: 500 × 20 = **10 000 × 10 000 px**). A higher scale means a sharper exported image. Lowering it reduces memory pressure on the browser during generation.
+</ParamField>
+
+<ParamField path="HOOP_DIAMETER" type="number" default="0.625">
+  Assumed physical hoop diameter in **meters**, used only to calculate the thread length estimate displayed during generation.
+
+  The formula scales pixel distances from the `IMG_SIZE` coordinate space to real-world distances:
+
+  ```js
+  thread_length += HOOP_DIAMETER / length * dist;
+  ```
+
+  The default of `0.625` m is approximately 25 inches. Change this to match your actual hoop for a more accurate thread estimate. This value has **no effect** on the visual output.
+</ParamField>

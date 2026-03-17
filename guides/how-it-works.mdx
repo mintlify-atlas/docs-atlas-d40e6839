@@ -1,0 +1,144 @@
+---
+title: "How it works"
+description: "A deep technical explanation of the greedy string art algorithm powering the generator."
+---
+
+The String Art Generator converts a photo into a sequence of straight lines stretched between pins arranged in a circle. This page explains the algorithm step by step.
+
+## Overview
+
+The generator uses a **greedy line-selection algorithm**. It works iteratively: at each step it asks, "which single line, drawn right now, reduces the difference between my current output and the target image the most?" It always picks the locally best option and repeats up to `MAX_LINES` times (default 4,000).
+
+This approach does not guarantee a globally optimal result, but it is fast and produces visually accurate output for a wide range of images.
+
+---
+
+## Image processing pipeline
+
+Before the algorithm runs, the image is preprocessed into a fixed-size grayscale circle.
+
+<Steps>
+  <Step title="Upload and square crop">
+    When you upload an image, the generator crops it to a square by taking the center of the longest axis. A 1200×800 image, for example, becomes an 800×800 crop offset 200 pixels from the left edge.
+
+    The cropped image is then scaled to **500×500 pixels** on an HTML canvas.
+  </Step>
+  <Step title="Grayscale conversion">
+    Each pixel's red, green, and blue channels are averaged:
+
+    ```
+    grayscale = (R + G + B) / 3
+    ```
+
+    All three channels are set to this average value, producing a neutral gray. Only the grayscale intensity is used downstream.
+  </Step>
+  <Step title="Circle crop">
+    The canvas compositing mode is set to `destination-in` and a filled circle is drawn over the 500×500 canvas. Pixels outside the circle are removed. The result is the working image the algorithm uses.
+  </Step>
+  <Step title="Error array initialization">
+    The error array is created from the processed image:
+
+    ```
+    error[x][y] = 255 - grayscale[x][y]
+    ```
+
+    Bright pixels (white = 255) produce error values near 0. Dark pixels (black = 0) produce error values near 255. The algorithm treats high-error pixels as regions that most need a line drawn through them.
+  </Step>
+</Steps>
+
+---
+
+## Pin placement
+
+The `N_PINS` pins (default 288) are placed evenly around a circle:
+
+- **Center**: `(250, 250)` — the center of the 500×500 canvas
+- **Radius**: `249.5` — just inside the canvas edge
+
+For each pin index `i` from 0 to N_PINS - 1:
+
+```
+angle = 2 * PI * i / N_PINS
+x = floor(250 + 249.5 * cos(angle))
+y = floor(250 + 249.5 * sin(angle))
+```
+
+Pin 0 starts at the 3 o'clock position (rightmost point of the circle) because `cos(0) = 1` and `sin(0) = 0`. Pins are numbered counter-clockwise as the angle increases.
+
+<Note>
+  When building the physical piece, you will need to account for this starting position. See [Physical creation](/guides/physical-creation) for how to map pin numbers to your hoop.
+</Note>
+
+---
+
+## Line precalculation
+
+Before the main loop starts, the generator computes and caches the pixel coordinates for every valid pair of pins. This avoids recomputing line paths thousands of times during the main loop.
+
+For a pair `(a, b)` where `b > a + MIN_DISTANCE` (default 20):
+
+1. Compute the Euclidean distance `d = floor(sqrt((x1-x0)^2 + (y1-y0)^2))`
+2. Generate `d` evenly spaced integer x-coordinates from `x0` to `x1` using `linspace`
+3. Generate `d` evenly spaced integer y-coordinates from `y0` to `y1` using `linspace`
+4. Store both arrays in `line_cache_x` and `line_cache_y` at index `a * N_PINS + b` (and symmetrically at `b * N_PINS + a`)
+
+The `MIN_DISTANCE` constraint means very short lines — between adjacent or near-adjacent pins — are never considered. These short lines produce tight loops that look bad and carry little visual information.
+
+---
+
+## Greedy line selection
+
+The main loop runs `MAX_LINES` times. Each iteration:
+
+1. **Find the best next pin**: For every candidate pin at offset `[MIN_DISTANCE, N_PINS - MIN_DISTANCE]` from the current pin:
+   - Skip pins in the `last_pins` buffer (see below)
+   - Sum the error values at every pixel along the candidate line
+   - Multiply by `line_cache_weight` (always 1 unless modified)
+   - Call this value `line_err`
+   - Track the candidate with the highest `line_err`
+
+2. **Draw the line**: Record the winning pin in `line_sequence`. Draw the line on the high-resolution result canvas.
+
+3. **Update the error array**: Subtract `LINE_WEIGHT` (default 20) from every pixel along the drawn line, clamped to `[0, 255]`:
+
+   ```
+   error[x][y] = max(0, error[x][y] - LINE_WEIGHT)
+   ```
+
+   Pixels that have been drawn over many times approach 0 and stop attracting new lines.
+
+4. **Advance the current pin**: The current pin becomes the best pin just selected. The next line starts from here.
+
+### The last_pins buffer
+
+A circular buffer of the last 20 pins used is maintained. Any pin in this buffer is skipped during candidate evaluation. This prevents the algorithm from oscillating back and forth between the same two pins repeatedly, which would produce a dark clump rather than a distributed image.
+
+---
+
+## High-resolution output
+
+The algorithm maintains two canvases in parallel:
+
+- **500×500 error canvas**: Used for all error calculations. Lines are drawn at pixel resolution here.
+- **10,000×10,000 result canvas**: The output image. Lines are drawn at 20× scale (`SCALE = 20`) using OpenCV's anti-aliased line renderer (`cv.LINE_AA`) with line width 2.
+
+OpenCV is loaded via `opencv.js` compiled to WebAssembly. It provides the `cv.line` function used to render lines onto the high-resolution Mat. The result is then downsampled to 1,000×1,000 for display in the browser.
+
+---
+
+## Thread length estimation
+
+At each step the generator accumulates an estimate of the total thread used:
+
+```
+dist = sqrt((x1 - x0)^2 + (y1 - y0)^2)   // in 500px image units
+thread_length += (HOOP_DIAMETER / IMG_SIZE) * dist
+```
+
+With `HOOP_DIAMETER = 0.625` meters and `IMG_SIZE = 500`:
+
+```
+scale_factor = 0.625 / 500 = 0.00125 meters per pixel
+```
+
+This assumes the physical hoop is approximately 62.5 cm (~25 inches) in diameter. The accumulated `thread_length` is the total thread estimate in meters.

@@ -1,0 +1,145 @@
+---
+title: "Physical creation"
+description: "How to use the pin sequence to physically build your string art on a hoop or canvas."
+---
+
+The generator produces a numbered pin sequence you can follow step by step to build the piece by hand. This guide covers everything from choosing materials to wrapping the last thread.
+
+---
+
+## What you need
+
+<CardGroup cols={2}>
+  <Card title="Hoop or canvas" icon="circle">
+    A circular wooden embroidery hoop, a canvas frame, or a wooden board. The default thread length estimate assumes a **~62.5 cm (~25 inch)** diameter hoop.
+  </Card>
+  <Card title="Nails or pins" icon="thumbtack">
+    Small finishing nails or map pins — one per pin number. For 288 pins on a 25-inch hoop, pins are approximately 2.7 cm apart.
+  </Card>
+  <Card title="Thread or string" icon="lines-leaning">
+    Thin sewing thread or embroidery floss. Thinner thread (0.1–0.3 mm) produces sharper results. The generator estimates the total length you need.
+  </Card>
+  <Card title="Reference printout" icon="print">
+    A printed copy of the preview image (optional but helpful for checking progress).
+  </Card>
+</CardGroup>
+
+---
+
+## Choosing pin count and hoop size
+
+The **Number of Pins** setting determines how densely your pins are spaced. Use this table as a guide:
+
+| Hoop diameter | Recommended pins | Approx. pin spacing |
+|---|---|---|
+| 30 cm (~12 in) | 100–150 | ~8–9 mm |
+| 50 cm (~20 in) | 200–250 | ~6–8 mm |
+| 62.5 cm (~25 in) | 288 (default) | ~6.8 mm |
+| 80 cm (~31 in) | 300–360 | ~7–8 mm |
+
+<Tip>
+  Match your physical pin spacing to what the generator was set to. If you use 288 pins in the generator but only install 200 physical pins, the sequence will not map correctly.
+</Tip>
+
+---
+
+## Numbering your pins
+
+The generator numbers pins starting at **pin 0**, placed at the **3 o'clock position** (rightmost point of the circle). Pins are numbered counter-clockwise as the angle increases.
+
+<Warning>
+  If you prefer pin 0 at the top (12 o'clock), you can rotate the physical hoop 90° clockwise after installing all pins. The relative pin sequence is the same — only the orientation changes.
+</Warning>
+
+To number the pins:
+
+<Steps>
+  <Step title="Mark pin 0">
+    Place the first nail at the 3 o'clock position (right side of the hoop). Label it 0, or use a small piece of tape.
+  </Step>
+  <Step title="Continue counter-clockwise">
+    Place remaining nails evenly around the circle, incrementing the number counter-clockwise. For 288 pins, each pin is 360 / 288 = 1.25 degrees apart.
+  </Step>
+  <Step title="Verify spacing">
+    After placing all pins, the last pin should land just before pin 0 with roughly equal spacing.
+  </Step>
+</Steps>
+
+---
+
+## The pin sequence format
+
+The output text area contains a comma-separated list of integers:
+
+```
+0,127,22,147,276,144,21,...
+```
+
+Each number is a pin to visit in order. To place a thread segment, take the thread from the current pin to the next pin in the list. The sequence starts at pin 0.
+
+Save this sequence by copying it to a text file. You can paste it back into the generator later using the **Already have steps?** button.
+
+---
+
+## Using the step-by-step creation assistant
+
+<Steps>
+  <Step title="Load your sequence">
+    If you just generated the sequence, it is already in the output text area. If you are returning to a saved sequence, click **Already have steps?** at the top of the page and paste the sequence into the text area.
+  </Step>
+  <Step title="Click Start Creating">
+    Click the **Start Creating** button. The creation assistant opens and displays the first step.
+  </Step>
+  <Step title="Read the display">
+    The display shows:
+
+    ```
+    Current Line: X | Pin A to B
+    ```
+
+    The red line on the canvas shows the exact thread path to place next — from **Pin A** to **Pin B**.
+  </Step>
+  <Step title="Place the thread">
+    Wrap the thread around **Pin A** (the starting pin) and stretch it to **Pin B**. Secure it by looping around the pin.
+  </Step>
+  <Step title="Advance to the next step">
+    Press **Space** or the **Right arrow** key, or click **Next Step**. The red line turns black (placed) and a new red line appears for the next step.
+  </Step>
+  <Step title="If you need to go back">
+    Press the **Left arrow** key or click **Last Step** to return to the previous step. Remove the last thread segment from the hoop and the canvas will redraw to show the previous state.
+  </Step>
+</Steps>
+
+<Tip>
+  Keyboard navigation lets you advance through steps hands-free while your hands are on the hoop. Set up a foot pedal or use a Bluetooth presenter clicker to advance without touching the keyboard.
+</Tip>
+
+---
+
+## Saving your sequence
+
+Before leaving the page, copy the entire contents of the output text area and paste it into a plain text file. This lets you:
+
+- Resume building without re-running the generator
+- Share the sequence with others
+- Build multiple copies of the same piece
+
+To restore a saved sequence, click **Already have steps?** at the top of the generator page and paste the sequence into the text area.
+
+---
+
+## Thread length estimate
+
+The generator calculates the total thread length using:
+
+```
+thread_length += (0.625 / 500) * pixel_distance_per_line
+```
+
+This assumes a **62.5 cm (~25 inch)** diameter hoop. If your hoop is a different size, scale the estimate proportionally:
+
+```
+your_estimate = generator_estimate * (your_hoop_diameter_m / 0.625)
+```
+
+Add 10–20% to account for wrapping around each pin and the starting/ending knots.

@@ -1,80 +1,90 @@
 ---
-title: "Quickstart"
-description: "Start building awesome documentation in minutes"
+title: Quickstart
+description: Upload a photo and generate your first string art pin sequence in minutes.
 ---
 
-## Get started in three steps
+The String Art Generator runs entirely in your browser. No installation, no account, and no server required. Follow these steps to go from a photo to a complete pin sequence.
 
-Get your documentation site running locally and make your first customization.
+<Steps>
+  <Step title="Open the generator">
+    Navigate to [halfmonty.github.io/StringArtGenerator](https://halfmonty.github.io/StringArtGenerator/) in a modern desktop browser (Chrome, Firefox, or Edge recommended).
+  </Step>
 
-### Step 1: Set up your local environment
+  <Step title="Wait for OpenCV to load">
+    The page loads OpenCV.js — a large WebAssembly library — from a CDN. The status bar at the top reads **"Please wait: loading..."** during this time.
 
-<AccordionGroup>
-  <Accordion icon="copy" title="Clone your docs locally">
-    During the onboarding process, you created a GitHub repository with your docs content if you didn't already have one. You can find a link to this repository in your [dashboard](https://dashboard.mintlify.com).
-    
-    To clone the repository locally so that you can make and preview changes to your docs, follow the [Cloning a repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) guide in the GitHub docs.
-  </Accordion>
-  <Accordion icon="rectangle-terminal" title="Start the preview server">
-    1. Install the Mintlify CLI: `npm i -g mint`
-    2. Navigate to your docs directory and run: `mint dev`
-    3. Open `http://localhost:3000` to see your docs live!
-    
-    <Tip>Your preview updates automatically as you edit files.</Tip>
-  </Accordion>
-</AccordionGroup>
+    Wait until the status changes to **"Generator is ready."** before proceeding. This typically takes 5–30 seconds depending on your connection speed.
 
-### Step 2: Deploy your changes
+    <Warning>
+      Do not upload an image until you see "Generator is ready." — uploads made before OpenCV finishes loading will not process correctly.
+    </Warning>
+  </Step>
 
-<AccordionGroup>
-  <Accordion icon="github" title="Install our GitHub app">
-    Install the Mintlify GitHub app from your [dashboard](https://dashboard.mintlify.com/settings/organization/github-app).
-    
-    Our GitHub app automatically deploys your changes to your docs site, so you don't need to manage deployments yourself.
-</Accordion>
-<Accordion icon="palette" title="Update your site name and colors">
-    For a first change, let's update the name and colors of your docs site.
+  <Step title="Adjust parameters (optional)">
+    Three parameters control the output. The defaults work well for most photos, but you can adjust them before uploading:
 
-    1. Open `docs.json` in your editor.
-    2. Change the `"name"` field to your project name.
-    3. Update the `"colors"` to match your brand.
-    4. Save and see your changes instantly at `http://localhost:3000`.
+    | Parameter | Default | What it controls |
+    |-----------|---------|-----------------|
+    | Number of Pins | 288 | How many nail positions are placed around the hoop |
+    | Number of Lines | 4000 | Maximum thread passes drawn |
+    | Line Weight | 20 | How dark each line appears in the error calculation |
 
-    <Tip>Try changing the primary color to see an immediate difference!</Tip>
-  </Accordion>
-</AccordionGroup>
+    <Tip>
+      Leave these at defaults for your first run. See [Configuration](/reference/configuration) for a full explanation of each parameter.
+    </Tip>
+  </Step>
 
-### Step 3: Go live
+  <Step title="Upload your photo">
+    Click **"Click Here and select an Image to Start"** and choose a photo from your device.
 
-<Accordion icon="rocket" title="Publish your docs">
-  1. Commit and push your changes.
-  2. Your docs will update and be live in moments!
-</Accordion>
+    <Tip>
+      For best results, use a high-contrast close-up portrait or bold graphic. Avoid busy backgrounds or images with many fine details — these reduce definition in the final output.
+    </Tip>
 
-## Next steps
+    The generator immediately begins processing. You will see your image appear cropped to a square and converted to grayscale.
+  </Step>
 
-Now that you have your docs running, explore these key features:
+  <Step title="Watch the generation progress">
+    Generation runs through three automatic stages:
 
-<CardGroup cols={2}>
+    1. **Calculating pins** — Pin coordinates are placed around the circle.
+    2. **Precalculating lines** — All valid line paths between pin pairs are computed.
+    3. **Drawing lines** — The greedy algorithm selects and draws lines one by one.
 
-<Card title="Write Content" icon="pen-to-square" href="/essentials/markdown">
-  Learn MDX syntax and start writing your documentation.
-</Card>
+    During stage 3, a counter shows your progress: `X Lines drawn | Y% complete`. The canvas updates every 10 lines so you can watch the image emerge in real time.
 
-<Card title="Customize style" icon="palette" href="/essentials/settings">
-  Make your docs match your brand perfectly.
-</Card>
+    <Info>
+      Generation takes roughly 30 seconds to a few minutes depending on your device. Keep the tab in the foreground — background tabs may slow down significantly due to browser throttling.
+    </Info>
 
-<Card title="Add code examples" icon="square-code" href="/essentials/code">
-  Include syntax-highlighted code blocks.
-</Card>
+    <Warning>
+      If the page becomes unresponsive, just refresh. If you already had a pin sequence saved, you can paste it back using the **"Already have steps?"** button — no need to regenerate.
+    </Warning>
+  </Step>
 
-<Card title="API documentation" icon="code" href="/api-reference/introduction">
-  Auto-generate API docs from OpenAPI specs.
-</Card>
+  <Step title="Review and copy your pin sequence">
+    When generation finishes, the status bar shows **"Complete"** and a large text area appears below the canvas containing your pin sequence — a comma-separated list of pin numbers like:
 
-</CardGroup>
+    ```
+    0,127,22,147,276,144,21,126,20,142,9,139,270,140,...
+    ```
 
-<Note>
-  **Need help?** See our [full documentation](https://mintlify.com/docs) or join our [community](https://mintlify.com/community).
-</Note>
+    **Copy this entire sequence now and save it somewhere safe** (a text file, notes app, etc.). This sequence is your output — if you close the page, you will need to re-run the generator to get it back unless you saved it.
+  </Step>
+
+  <Step title="Choose your next step">
+    Two buttons appear below the pin sequence textarea:
+
+    - **Start Creating** — Opens the step-by-step creation assistant. Each thread path is shown one at a time (highlighted in red), with keyboard controls to advance or go back. Use this mode when you are physically building the piece.
+    - **Just Draw** — Replays the entire sequence on the canvas automatically at full speed. Use this to see a digital preview of the final result.
+
+    <CardGroup cols={2}>
+      <Card title="Physical creation guide" icon="hand-sparkles" href="/guides/physical-creation">
+        Step-by-step instructions for building the piece physically.
+      </Card>
+      <Card title="Tips and tricks" icon="lightbulb" href="/guides/tips-and-tricks">
+        Parameter tuning and best practices for better results.
+      </Card>
+    </CardGroup>
+  </Step>
+</Steps>
