@@ -9,7 +9,7 @@ The String Art Generator exposes three parameters directly in the UI. Additional
 
 These parameters are shown in the header and take effect before you upload an image. Each field responds to `keyup` events — changes apply as you type.
 
-<ParamField query="Number of Pins" type="integer" default="288">
+<ParamField body="Number of Pins" type="integer" default="288">
   Controls how many nail/pin positions are arranged evenly around the circular hoop.
 
   **Internal variable:** `N_PINS`
@@ -25,7 +25,7 @@ These parameters are shown in the header and take effect before you upload an im
   **Physical implication:** This is the exact number of nails or pins you will need to place on your hoop when building the physical piece.
 </ParamField>
 
-<ParamField query="Number of Lines" type="integer" default="4000">
+<ParamField body="Number of Lines" type="integer" default="4000">
   Maximum number of thread passes the algorithm will draw before stopping.
 
   **Internal variable:** `MAX_LINES`
@@ -39,7 +39,7 @@ These parameters are shown in the header and take effect before you upload an im
   </Note>
 </ParamField>
 
-<ParamField query="Line Weight" type="integer" default="20">
+<ParamField body="Line Weight" type="integer" default="20">
   How much each drawn line darkens the internal error image during generation.
 
   **Internal variable:** `LINE_WEIGHT`
@@ -72,9 +72,9 @@ The following constants are defined at the top of the JavaScript in `index.html`
 </ParamField>
 
 <ParamField path="MIN_LOOP" type="integer" default="20">
-  Size of the recent-pin history buffer used to avoid immediately reusing the same pins.
+  Declared at the top of the script alongside other constants, but **not used** by the current algorithm implementation.
 
-  The last `MIN_LOOP` visited pins are tracked in `last_pins`. A candidate pin is skipped if it already appears in this list, preventing the thread from looping back and forth between the same small group of pins repeatedly.
+  The recent-pin history buffer (`last_pins`) is hardcoded to hold the last 20 visited pins. A candidate pin is skipped if it already appears in this list, preventing oscillation between a small group of pins. This constant was likely intended as a configurable version of that limit but is not wired up in the current code.
 </ParamField>
 
 <ParamField path="IMG_SIZE" type="integer" default="500">

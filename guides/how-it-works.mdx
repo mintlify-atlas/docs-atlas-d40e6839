@@ -63,7 +63,7 @@ x = floor(250 + 249.5 * cos(angle))
 y = floor(250 + 249.5 * sin(angle))
 ```
 
-Pin 0 starts at the 3 o'clock position (rightmost point of the circle) because `cos(0) = 1` and `sin(0) = 0`. Pins are numbered counter-clockwise as the angle increases.
+Pin 0 starts at the 3 o'clock position (rightmost point of the circle) because `cos(0) = 1` and `sin(0) = 0`. In the browser canvas coordinate system, the y-axis points **downward**, so as the angle increases, pins are numbered **clockwise** around the circle.
 
 <Note>
   When building the physical piece, you will need to account for this starting position. See [Physical creation](/guides/physical-creation) for how to map pin numbers to your hoop.
