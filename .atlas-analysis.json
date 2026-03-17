@@ -1,0 +1,63 @@
+{
+  "projectType": "general",
+  "projectName": "String Art Generator",
+  "projectDescription": "A web-based tool that converts photos into string art patterns by algorithmically determining the optimal sequence of pins and threads to recreate an image.",
+  "theme": "mint",
+  "primaryColor": "#fa4607",
+  "lightColor": "#141b1d",
+  "darkColor": "#e3e6e8",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": ["introduction", "quickstart"]
+          },
+          {
+            "group": "Guides",
+            "pages": [
+              "guides/how-it-works",
+              "guides/using-the-generator",
+              "guides/physical-creation",
+              "guides/tips-and-tricks"
+            ]
+          },
+          {
+            "group": "Reference",
+            "pages": [
+              "reference/configuration",
+              "reference/examples"
+            ]
+          },
+          {
+            "group": "FAQ",
+            "pages": ["faq"]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Upload any photo and convert it to a string art pattern automatically",
+    "Configurable number of pins, lines, and line weight for fine-tuning results",
+    "Real-time preview showing string art output as it generates",
+    "Step-by-step creation assistant to guide physical construction",
+    "Saves and restores pin sequences so you don't have to regenerate",
+    "Built-in example patterns to try without uploading a photo",
+    "Keyboard navigation support (arrow keys / spacebar) during creation mode",
+    "OpenCV-powered image processing with grayscale conversion and circle crop"
+  ],
+  "publicApiSurface": [
+    "Number of Pins (N_PINS) - configurable integer, default 288",
+    "Number of Lines (MAX_LINES) - configurable integer, default 4000",
+    "Line Weight (LINE_WEIGHT) - configurable integer, default 20",
+    "Image upload via file input",
+    "Pin sequence output (comma-separated integers)",
+    "example1() / example2() / example3() - built-in example sequences",
+    "startCreating() - step-by-step creation assistant mode",
+    "startDrawing() - full auto-draw mode",
+    "nextStep() / lastStep() - navigation in creation mode"
+  ]
+}
